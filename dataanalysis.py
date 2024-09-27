@@ -30,7 +30,11 @@ plt.suptitle("Distribution of Numerical Features")
 plt.show()
 
 # Step 5: Correlation Analysis
-correlation_matrix = train_data.corr()
+# Exclude 'date' column for correlation analysis
+numerical_data = train_data.drop(columns=['date'])
+
+# Calculate the correlation matrix
+correlation_matrix = numerical_data.corr()
 
 # Plotting the correlation matrix
 plt.figure(figsize=(10, 6))
@@ -38,19 +42,16 @@ sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
 plt.title('Correlation Matrix of Features')
 plt.show()
 
-# Step 6: Time Series Plot (if 'unix' timestamp exists)
-if 'unix' in train_data.columns:
-    # Convert UNIX timestamp to a datetime forma at
-    train_data['date'] = pd.to_datetime(train_data['unix'], unit='s')
-    
-    # Plot the 'close' price over time
-    plt.figure(figsize=(10, 5))
-    plt.plot(train_data['date'], train_data['close'], label='Close Price')
-    plt.xlabel('Date')
-    plt.ylabel('Close Price')
-    plt.title('Close Price Over Time')
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.show()
-else:
-    print("\nNo 'unix' column found for time series analysis.")
+# Step 6: Time Series Plot (for 'date' column)
+# Convert the 'date' column to a datetime format
+train_data['date'] = pd.to_datetime(train_data['date'], format='%Y-%m-%d %H:%M:%S')
+
+# Plot the 'close' price over time
+plt.figure(figsize=(10, 5))
+plt.plot(train_data['date'], train_data['close'], label='Close Price')
+plt.xlabel('Date')
+plt.ylabel('Close Price')
+plt.title('Close Price Over Time')
+plt.legend()
+plt.xticks(rotation=45)
+plt.show()
